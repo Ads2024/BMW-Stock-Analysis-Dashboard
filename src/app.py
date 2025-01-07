@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
@@ -6,6 +7,7 @@ from datetime import datetime, timedelta
 import numpy as np
 from scipy.stats import norm
 from plotly.subplots import make_subplots
+from styles import get_page_styling,get_particles_js,URLS
 
 # config
 st.set_page_config(
@@ -15,124 +17,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS
-st.markdown("""
-    <style>
-    /* Main theme colors and styling */
-    :root {
-        --primary-color: #1E88E5;
-        --background-color: #0e1117;
-        --secondary-bg: #1a1a1a;
-        --text-color: #ffffff;
-        --accent-color: #00ff88;
-    }
-    
-    /* Global styles */
-    .main {
-        background-color: var(--background-color);
-        color: var(--text-color);
-    }
-    
-    /* Custom container styling */
-    .custom-container {
-        background-color: var(--secondary-bg);
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-    }
-    
-    /* Enhanced metric card styling */
-    .metric-card {
-        background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
-        border-radius: 15px;
-        padding: 20px;
-        text-align: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        transition: transform 0.3s ease;
-    }
-    
-    .metric-card:hover {
-        transform: translateY(-5px);
-    }
-    
-    .metric-value {
-        font-size: 28px;
-        font-weight: bold;
-        color: var(--accent-color);
-        margin-bottom: 8px;
-        text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
-    }
-    
-    .metric-label {
-        font-size: 16px;
-        color: #888888;
-        font-weight: 500;
-    }
-    
-    /* Chart container styling */
-    .chart-container {
-        background-color: var(--secondary-bg);
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 20px;
-    }
-    
-    /* Custom header styling */
-    .custom-header {
-        font-size: 24px;
-        font-weight: bold;
-        color: var(--text-color);
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid var(--primary-color);
-    }
-    
-    /* Sidebar styling */
-    .sidebar .sidebar-content {
-        background-color: var(--secondary-bg);
-    }
-    
-    /* Table styling */
-    .dataframe {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    
-    .dataframe th {
-        background-color: var(--secondary-bg);
-        padding: 12px;
-        text-align: left;
-        color: var(--accent-color);
-    }
-    
-    .dataframe td {
-        padding: 12px;
-        border-bottom: 1px solid #2a2a2a;
-    }
-    
-    /* Button styling */
-    .stButton>button {
-        background-color: var(--primary-color);
-        color: white;
-        border-radius: 5px;
-        padding: 10px 20px;
-        border: none;
-        transition: all 0.3s ease;
-    }
-    
-    .stButton>button:hover {
-        background-color: #1565C0;
-        transform: translateY(-2px);
-    }
-    
-    /* Section headers */
-    h1, h2, h3 {
-        color: var(--text-color);
-        font-weight: 600;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+
+
+#st.markdown(particles_js, unsafe_allow_html=True)
+st.markdown(get_page_styling(), unsafe_allow_html=True)
+
+components.html(get_particles_js(), height=800, scrolling=False)
+
 
 # Load  data
 @st.cache_data
@@ -143,15 +34,18 @@ def load_data():
 
 df = load_data()
 
-# Sidebar 
+# Sidebar with enhanced styling
 with st.sidebar:
+    st.image(URLS["BMW"], width=200)
     st.markdown("""
-        <div style='text-align: center; margin-bottom: 20px;'>
-            <h1 style='color: #1E88E5;'>📊 Dashboard Controls</h1>
+        <div class="glass-card">
+            <h1 style='color: #1E88E5; text-align: center; margin-bottom: 20px;'>
+                🚗 Dashboard Controls
+            </h1>
         </div>
     """, unsafe_allow_html=True)
     
-    # Date range  presets
+    # Date range selector with presets
     date_preset = st.selectbox(
         "Select Time Period",
         ["Custom", "1 Month", "3 Months", "6 Months", "1 Year", "5 Years", "All Time"]
@@ -180,8 +74,12 @@ with st.sidebar:
             start_date = df['Date'].min()
         date_range = (start_date.date(), end_date.date())
 
-    # Technical Analysis Controls
-    st.markdown("### 📈 Technical Indicators")
+    st.markdown("""
+        <div class="glass-card">
+            <h3 style='color: #1E88E5;'>📈 Technical Indicators</h3>
+        </div>
+    """, unsafe_allow_html=True)
+    
     show_ma = st.checkbox("Show Moving Averages", True)
     show_bb = st.checkbox("Show Bollinger Bands", True)
     
@@ -195,14 +93,19 @@ with st.sidebar:
 mask = (df['Date'].dt.date >= date_range[0]) & (df['Date'].dt.date <= date_range[1])
 filtered_df = df.loc[mask]
 
-# Main content
+# Main header with glassmorphism effect
 st.markdown("""
-    <div style='text-align: center; padding: 20px 0;'>
-        <h1 style='color: #1E88E5; font-size: 36px;'>🚗 BMW Stock Analytics Dashboard</h1>
+    <div class="glass-card" style="text-align: center; padding: 30px 0;">
+        <h1 style='font-size: 42px; margin-bottom: 10px;'>
+            <span style='color: #1E88E5;'>BMW</span> Stock Analytics Dashboard
+        </h1>
+        <p style='color: rgba(255, 255, 255, 0.7); font-size: 18px;'>
+            Comprehensive analysis and real-time insights
+        </p>
     </div>
 """, unsafe_allow_html=True)
 
-# Key metrics with enhanced styling
+# Key metrics with enhanced glassmorphism styling
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -219,7 +122,9 @@ with col2:
     color = "#00ff88" if price_change >= 0 else "#ff4444"
     st.markdown(f"""
         <div class="metric-card">
-            <div class="metric-value" style="color: {color}">{price_change:,.2f}%</div>
+            <div class="metric-value" style="background: linear-gradient(45deg, {color}, {color}); -webkit-background-clip: text;">
+                {price_change:,.2f}%
+            </div>
             <div class="metric-label">Price Change</div>
         </div>
     """, unsafe_allow_html=True)
@@ -240,12 +145,12 @@ with col4:
             <div class="metric-value">{:,.2f}%</div>
             <div class="metric-label">Annualized Volatility</div>
         </div>
-    """, unsafe_allow_html=True)
+    """.format(volatility), unsafe_allow_html=True)
 
-# Advanced Interactive Charts
+# Main chart section with glassmorphism
 st.markdown("""
-    <div class="custom-container">
-        <h2 class="custom-header">📈 Price Analysis</h2>       
+    <div class="glass-card">
+        <h2 class="custom-header">📈 Price Analysis</h2>
     </div>
 """, unsafe_allow_html=True)
 
@@ -254,7 +159,7 @@ fig = make_subplots(rows=2, cols=1, shared_xaxes=True,
                     vertical_spacing=0.03, 
                     row_heights=[0.7, 0.3])
 
-# Candlestick chart
+# Candlestick chart with enhanced styling
 fig.add_trace(go.Candlestick(
     x=filtered_df['Date'],
     open=filtered_df['Open'],
