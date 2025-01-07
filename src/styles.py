@@ -164,104 +164,78 @@ def get_page_styling():
     """
 
 def get_particles_js():
-    return """<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-  #particles-js {
-    position: fixed;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: -1;
-  }
-  .content {
-    position: relative;
-    z-index: 1;
-    color: white;
-  }
-  </style>
-</head>
-<body>
-  <div id="particles-js"></div>
-  <div class="content">
-  </div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
-  <script>
-    particlesJS("particles-js", {
-      "particles": {
-        "number": {
-          "value": 80,
-          "density": {
-            "enable": true,
-            "value_area": 800
-          }
-        },
-        "color": {
-          "value": "#1E88E5"
-        },
-        "shape": {
-          "type": "circle",
-        },
-        "opacity": {
-          "value": 0.3,
-          "random": true,
-        },
-        "size": {
-          "value": 3,
-          "random": true,
-        },
-        "line_linked": {
-          "enable": true,
-          "distance": 150,
-          "color": "#1E88E5",
-          "opacity": 0.2,
-          "width": 1
-        },
-        "move": {
-          "enable": true,
-          "speed": 2,
-          "direction": "none",
-          "random": true,
-          "straight": false,
-          "out_mode": "out",
-          "bounce": false,
+   return """
+    <canvas id="starfield"></canvas>
+    <style>
+    #starfield {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: -1;
+        background: #0d1117;
+    }
+    </style>
+    <script>
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const stars = [];
+    const numStars = 200;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    class Star {
+        constructor() {
+            this.reset();
         }
-      },
-      "interactivity": {
-        "detect_on": "canvas",
-        "events": {
-          "onhover": {
-            "enable": true,
-            "mode": "grab"
-          },
-          "onclick": {
-            "enable": true,
-            "mode": "push"
-          },
-          "resize": true
-        },
-        "modes": {
-          "grab": {
-            "distance": 140,
-            "line_linked": {
-              "opacity": 1
-            }
-          },
-          "push": {
-            "particles_nb": 4
-          }
+
+        reset() {
+            this.x = Math.random() * canvas.width - centerX;
+            this.y = Math.random() * canvas.height - centerY;
+            this.z = Math.random() * canvas.width;
         }
-      },
-      "retina_detect": true
-    });
-  </script>
-</body>
-</html>
-"""
+
+        update() {
+            this.z -= 10;
+            if (this.z <= 0) this.reset();
+        }
+
+        draw() {
+            const x = (this.x / this.z) * canvas.width + centerX;
+            const y = (this.y / this.z) * canvas.height + centerY;
+            const size = (1 - this.z / canvas.width) * 3;
+
+            ctx.beginPath();
+            ctx.arc(x, y, size, 0, Math.PI * 2);
+            ctx.fillStyle = '#1E88E5';
+            ctx.fill();
+        }
+    }
+
+    for (let i = 0; i < numStars; i++) {
+        stars.push(new Star());
+    }
+
+    function animate() {
+        ctx.fillStyle = 'rgba(13, 17, 23, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        stars.forEach(star => {
+            star.update();
+            star.draw();
+        });
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+    </script>
+    """
 
 # read gif file
 def read_gif(file_name):

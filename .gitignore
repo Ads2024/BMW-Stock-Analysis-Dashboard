@@ -61,6 +61,5 @@ env/
 *.db
 
 # other
-.streamlit/
 data/raw/
 data/upload_data/
