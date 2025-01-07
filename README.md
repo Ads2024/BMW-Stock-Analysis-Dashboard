@@ -1,8 +1,8 @@
 # BMW Stock Analytics Dashboard 🚗
 
-A modern, interactive dashboard built with Streamlit for analyzing BMW stock data. Features a beautiful UI with glassmorphism effects and dynamic starfield background animation.
+A modern, interactive dashboard built with Streamlit for analyzing BMW stock data. Features a UI with glassmorphism effects and dynamic starfield background animation.
 
-![Dashboard Preview](assets\Preview.gif)
+![Dashboard Preview](assets/Preview.gif)
 
 ## 🌟 Features
 
